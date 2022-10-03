@@ -1,0 +1,23 @@
+body {
+    background-color: rgba(162, 192, 182, 0.521) !important;
+
+}
+
+section {
+    height: 130vh !important;
+}
+
+table {
+    width: 80%;
+    margin: 20px auto;
+    border: 1px solid black;
+    border-collapse: collapse;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+table tr th,
+table tr td {
+    padding: 10px;
+    border: 1px solid black;
+}

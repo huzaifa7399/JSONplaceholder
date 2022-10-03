@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <style>
+        body {
+            background-color: rgba(162, 192, 182, 0.521) !important;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+            text-transform: capitalize;
+        }
+
+        table tr th,
+        table tr td {
+            padding: 10px;
+            border: 1px solid black;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            /* height: 40vh; */
+
+            /* bottom: 0; */
+            /* right: 15px; */
+            border: 3px solid #332e2e9d;
+            z-index: 9;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+    <section class="text-dark">
+        <div class="container-lg">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>USERNAME</th>
+                    <th>EMAIL</th>
+                    <th>PHONE</th>
+                    <th>WEBSITE</th>
+                    <th>SAVE</th>
+                    <!-- <th>RELOAD</th> -->
+                </tr>
+                <tbody id="table1-body">
+                    <tr>
+                        <td id="userID"></td>
+                        <td>
+                            <input id="nameUpdate" placeholder="name" type="text">
+                        </td>
+                        <td>
+                            <input id="userUpdate" placeholder="username" type="text">
+                        </td>
+                        <td>
+                            <input id="emailUpdate" placeholder="email" type="text">
+                        </td>
+                        <td>
+                            <input id="phoneUpdate" placeholder="phone number" type="text">
+                        </td>
+                        <td>
+                            <input id="website" placeholder="website" type="text">
+                        </td>
+                        <td><a href="#" class="text-dark btns" onclick="openPopup()" id="saveMe">Save</a>
+                            <!-- </td>
+                        <td><a href="index.html" class="text-dark">Reload</a>
+                        </td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="popup modal-fullscreen text-center text-dark"></div>
+    </section>
+    <script>
+        const modal = document.querySelector('.popup')
+        const saveMe = document.querySelector('#saveMe')
+        const table1 = document.querySelector('#table1-body')
+        var nameUpdate = document.querySelector('#nameUpdate')
+        var userUpdate = document.querySelector('#userUpdate')
+        var emailUpdate = document.querySelector('#emailUpdate')
+        var phoneUpdate = document.querySelector('#phoneUpdate')
+        var userId = document.querySelector('#userID')
+        var websiteIn = document.querySelector('#website')
+        const myUrl = 'https://jsonplaceholder.typicode.com/users/'
+        const changedURL = new URL(window.location.href)
+        const newIndex = changedURL.searchParams.get('userId')
+        // console.log(newIndex)
+
+        async function newTab() {
+            await fetch(`${myUrl}${newIndex}`)
+                .then(response => response.json())
+                .then(data => {
+                    const { id, email, username, name, phone, website } = data
+                    userId.innerHTML = id
+                    nameUpdate.value = name
+                    userUpdate.value = username
+                    emailUpdate.value = email
+                    phoneUpdate.value = phone
+                    websiteIn.value = website
+                    saveMe.addEventListener('click', () => {
+
+                        fetch(`${myUrl}${newIndex}`, {
+                            method: 'PUT',
+                            body: JSON.stringify({
+                                id: userId.innerHTML,
+                                name: nameUpdate.value,
+                                username: userUpdate.value,
+                                email: emailUpdate.value,
+                                phone: phoneUpdate.value,
+                                website: websiteIn.value
+                            }),
+                            headers: {
+                                'Content-type': 'application/json; charset=UTF-8',
+                            },
+                        })
+                            .then((response) => response.json())
+                            .then((json) => {
+                                console.log(json)
+                                // alert('check console')
+                                const { id, email, username, name, phone, website } = json
+                                let myCard = `<h1>
+                                      ID: ${id}<br>
+                                      NAME: ${name}<br>
+                                      USERNAME: ${username}<br> 
+                                      EMAIL: ${email} <br>
+                                      PHONE: ${phone} <br>
+                                      WEBSITE: ${website}</h1>
+                                      <a class="btn"href="index.html">Restart</a>`
+                                modal.innerHTML = myCard
+
+                            });
+                        // console.log('click')
+                    })
+                })
+                .catch(err => console.error(err))
+        }
+        newTab()
+        function openPopup() {
+            modal.style.display = "block"
+        }
+        // openPopup()
+
+    </script>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+
+</html>
